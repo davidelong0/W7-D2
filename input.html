@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Notepad in JS!</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <style>
+      .my-alert {
+        width: 200px;
+        top: 10px;
+        right: 10px;
+      }
+
+      @keyframes appear {
+        0% {
+          opacity: 0;
+        }
+
+        100% {
+          opacity: 1;
+        }
+      }
+
+      @keyframes disappear {
+        0% {
+          opacity: 1;
+        }
+
+        100% {
+          opacity: 0;
+        }
+      }
+
+      .alert-coming {
+        animation: appear 1s linear 0s 1 forwards;
+      }
+
+      .alert-going {
+        animation: disappear 1s linear 0s 1 forwards;
+      }
+
+      .input-group .form-control {
+        flex: 0 0 auto;
+        max-width: 300px;
+      }
+    </style>
+  </head>
+  <body class="vh-100 d-flex flex-column bg-dark">
+    <header>
+      <h1 class="text-center my-3 text-light">CAMPO INPUT</h1>
+    </header>
+
+    <!-- Display saved name above the input field -->
+    <div id="saved-name" class="my-3 text-center text-light invisible">
+      <p id="saved-name-text">
+        Nome salvato: <span id="saved-name-value">Nessun nome salvato</span>
+      </p>
+    </div>
+
+    <!-- Input field e pulsanti -->
+    <div class="input-group justify-content-center">
+      <input
+        type="text"
+        class="form-control w-50"
+        placeholder="Inserisci il tuo nome"
+        id="content"
+      />
+      <button class="btn btn-outline-secondary" type="button" id="save">
+        Salva
+      </button>
+      <button class="btn btn-outline-secondary" type="button" id="remove">
+        Rimuovi
+      </button>
+    </div>
+
+    <main class="flex-grow-1">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col col-12 col-md-10">
+            <!-- ALERT SUCCESS -->
+            <div
+              class="alert alert-success my-alert position-absolute invisible"
+              role="alert"
+              id="success-alert"
+            >
+              Contenuto salvato!
+            </div>
+
+            <!-- ALERT cancel -->
+            <div
+              class="alert alert-warning my-alert position-absolute invisible"
+              role="alert"
+              id="cancel-alert"
+            >
+              Memoria cancellata!
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <footer></footer>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      // recupero un riferimento stabile al campo input
+      const textAreaInput = document.getElementById("content");
+
+      // prendere i riferimenti ai pulsanti e applicarci del comportamento
+      // PULSANTE SALVA
+      const saveButton = document.getElementById("save");
+      saveButton.addEventListener("click", function () {
+        // 1) recuperare il contenuto del campo di input
+        const name = textAreaInput.value.trim();
+
+        if (name !== "") {
+          // 2) salvare il nome nel localStorage
+          localStorage.setItem("userName", name);
+
+          // 3) aggiorna la visualizzazione sopra l'input
+          const savedNameValue = document.getElementById("saved-name-value");
+          savedNameValue.textContent = name;
+
+          // Mostra il blocco di nome salvato
+          const nameDisplay = document.getElementById("saved-name");
+          nameDisplay.classList.remove("invisible");
+
+          // 4) Mostrare l'alert di successo
+          const successAlert = document.getElementById("success-alert");
+          successAlert.classList.remove("alert-coming");
+          successAlert.classList.remove("alert-going");
+          successAlert.classList.add("invisible");
+
+          successAlert.classList.remove("invisible");
+          successAlert.classList.add("alert-coming");
+
+          setTimeout(function () {
+            successAlert.classList.add("alert-going");
+          }, 3000); // 3s
+
+          // Svuota la textarea dopo aver salvato
+          textAreaInput.value = "";
+        }
+      });
+
+      // PULSANTE RIMUOVI
+      const removeButton = document.getElementById("remove");
+      removeButton.addEventListener("click", function () {
+        // 1) Rimuovere il nome dal localStorage
+        localStorage.removeItem("userName");
+
+        // 2) Nascondere il nome salvato sopra l'input
+        const nameDisplay = document.getElementById("saved-name");
+        nameDisplay.classList.add("invisible");
+
+        // 3) Mostrare l'alert di rimozione
+        const removeAlert = document.getElementById("cancel-alert");
+        removeAlert.classList.remove("alert-coming");
+        removeAlert.classList.remove("alert-going");
+        removeAlert.classList.add("invisible");
+
+        removeAlert.classList.remove("invisible");
+        removeAlert.classList.add("alert-coming");
+
+        setTimeout(function () {
+          removeAlert.classList.add("alert-going");
+        }, 3000); // 3s
+      });
+
+      // Recupera il nome salvato dal localStorage quando la pagina viene caricata
+      window.onload = function () {
+        const savedName = localStorage.getItem("userName");
+
+        // Se c'è un nome salvato, visualizzalo sopra l'input
+        if (savedName) {
+          const savedNameValue = document.getElementById("saved-name-value");
+          savedNameValue.textContent = savedName;
+
+          // Mostra il blocco di nome salvato
+          const nameDisplay = document.getElementById("saved-name");
+          nameDisplay.classList.remove("invisible");
+        }
+      };
+    </script>
+  </body>
+</html>
